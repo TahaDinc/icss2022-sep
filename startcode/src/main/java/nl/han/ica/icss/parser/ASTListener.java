@@ -62,4 +62,12 @@ Override public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
 			currentContainer.peek().addChild(selector);
 		}
 	}
+	@Override public void enterDeclaration(ICSSParser.DeclarationContext ctx) {
+		Declaration declaration = new Declaration(ctx.property().getText());
+		currentContainer.push(declaration);
+	}
+	@Override public void exitDeclaration(ICSSParser.DeclarationContext ctx) {
+		Declaration declaration = (Declaration) currentContainer.pop();
+		currentContainer.peek().addChild(declaration);
+	}
 }
