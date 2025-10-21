@@ -75,4 +75,8 @@ Override public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
 		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
 		currentContainer.peek().addChild(pixelLiteral);
 	}
+	@Override public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
+		ColorLiteral colorLiteral = new ColorLiteral(ctx.COLOR().getText());
+		currentContainer.peek().addChild(colorLiteral);
+	}
 }
