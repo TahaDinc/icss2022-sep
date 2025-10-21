@@ -70,4 +70,9 @@ Override public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
 		Declaration declaration = (Declaration) currentContainer.pop();
 		currentContainer.peek().addChild(declaration);
 	}
+	@Override public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
+
+		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
+		currentContainer.peek().addChild(pixelLiteral);
+	}
 }
