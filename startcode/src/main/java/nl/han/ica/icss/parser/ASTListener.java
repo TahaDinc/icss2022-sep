@@ -50,4 +50,16 @@ Override public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
 		Stylerule stylerule = (Stylerule) currentContainer.pop();
 		currentContainer.peek().addChild(stylerule);
 	}
+	@Override public void enterSelector(ICSSParser.SelectorContext ctx) {
+		if (ctx.LOWER_IDENT() != null) {
+			TagSelector selector = new TagSelector(ctx.LOWER_IDENT().getText());
+			currentContainer.peek().addChild(selector);
+		} else if (ctx.CLASS_IDENT() != null) {
+			ClassSelector selector = new ClassSelector(ctx.CLASS_IDENT().getText().substring(1));
+			currentContainer.peek().addChild(selector);
+		} else if (ctx.ID_IDENT() != null) {
+			IdSelector selector = new IdSelector(ctx.ID_IDENT().getText().substring(1));
+			currentContainer.peek().addChild(selector);
+		}
+	}
 }
