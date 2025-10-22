@@ -42,6 +42,20 @@ public class ASTListener extends ICSSBaseListener {
 		Stylesheet stylesheet = (Stylesheet) currentContainer.pop();
 		ast.root = stylesheet;
 	}
+
+	@Override
+	public void enterAssignment(ICSSParser.AssignmentContext ctx) {
+		// Nieuwe Assignment node aanmaken
+		VariableAssignment assignment = new VariableAssignment();
+		assignment.name = new VariableReference(ctx.CAPITAL_IDENT().getText());
+		currentContainer.peek().addChild(assignment);
+		currentContainer.push(assignment);
+	}
+
+	@Override
+	public void exitAssignment(ICSSParser.AssignmentContext ctx) {
+		currentContainer.pop();
+	}
 	@Override public void enterStylerule(ICSSParser.StyleruleContext ctx) {
 		Stylerule stylerule = new Stylerule();
 		currentContainer.push(stylerule);
