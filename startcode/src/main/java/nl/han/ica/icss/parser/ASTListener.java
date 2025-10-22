@@ -108,6 +108,14 @@ public class ASTListener extends ICSSBaseListener {
 	@Override public void exitSubExpression(ICSSParser.SubExpressionContext ctx) {
 		currentContainer.pop();
 	}
+	@Override public void enterMulExpression(ICSSParser.MulExpressionContext ctx) {
+		MultiplyOperation multiplyOperation = new MultiplyOperation();
+		currentContainer.peek().addChild(multiplyOperation);
+		currentContainer.push(multiplyOperation);
+	}
+	@Override public void exitMulExpression(ICSSParser.MulExpressionContext ctx) {
+		currentContainer.pop();
+	}
 	@Override public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
 
 		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
