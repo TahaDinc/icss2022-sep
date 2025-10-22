@@ -100,6 +100,14 @@ public class ASTListener extends ICSSBaseListener {
 	@Override public void exitAddExpression(ICSSParser.AddExpressionContext ctx) {
 		currentContainer.pop();
 	}
+	@Override public void enterSubExpression(ICSSParser.SubExpressionContext ctx) {
+		SubtractOperation subtractOperation = new SubtractOperation();
+		currentContainer.peek().addChild(subtractOperation);
+		currentContainer.push(subtractOperation);
+	}
+	@Override public void exitSubExpression(ICSSParser.SubExpressionContext ctx) {
+		currentContainer.pop();
+	}
 	@Override public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
 
 		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
