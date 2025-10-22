@@ -116,6 +116,10 @@ public class ASTListener extends ICSSBaseListener {
 	@Override public void exitMulExpression(ICSSParser.MulExpressionContext ctx) {
 		currentContainer.pop();
 	}
+	@Override public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
+		ScalarLiteral scalarLiteral = new ScalarLiteral(ctx.SCALAR().getText());
+		currentContainer.peek().addChild(scalarLiteral);
+	}
 	@Override public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
 
 		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
