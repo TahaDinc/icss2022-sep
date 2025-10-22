@@ -92,6 +92,14 @@ public class ASTListener extends ICSSBaseListener {
 		Declaration declaration = (Declaration) currentContainer.pop();
 		currentContainer.peek().addChild(declaration);
 	}
+	@Override public void enterAddExpression(ICSSParser.AddExpressionContext ctx) {
+		AddOperation addOperation = new AddOperation();
+		currentContainer.peek().addChild(addOperation);
+		currentContainer.push(addOperation);
+	}
+	@Override public void exitAddExpression(ICSSParser.AddExpressionContext ctx) {
+		currentContainer.pop();
+	}
 	@Override public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
 
 		PixelLiteral pixelLiteral = new PixelLiteral((ctx.PIXELSIZE().getText()));
