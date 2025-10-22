@@ -129,4 +129,12 @@ public class ASTListener extends ICSSBaseListener {
 		ColorLiteral colorLiteral = new ColorLiteral(ctx.COLOR().getText());
 		currentContainer.peek().addChild(colorLiteral);
 	}
+	@Override public void enterTrueLiteral(ICSSParser.TrueLiteralContext ctx) {
+		BoolLiteral boolLiteral = new BoolLiteral(true);
+		currentContainer.peek().addChild(boolLiteral);
+	}
+	@Override public void enterFalseLiteral(ICSSParser.FalseLiteralContext ctx) {
+		BoolLiteral boolLiteral = new BoolLiteral(false);
+		currentContainer.peek().addChild(boolLiteral);
+	}
 }
