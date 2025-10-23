@@ -45,23 +45,35 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: (assignment | stylerule)*;
-assignment: CAPITAL_IDENT ASSIGNMENT_OPERATOR expression SEMICOLON;
-stylerule: selector OPEN_BRACE declaration* CLOSE_BRACE;
-selector: LOWER_IDENT | ID_IDENT | CLASS_IDENT;
-declaration: property COLON expression SEMICOLON;
-property: LOWER_IDENT;
-expression:
-  expression PLUS expression #addExpression
-  | expression MIN expression #subExpression
-  | expression MUL expression #mulExpression
-  | COLOR #colorLiteral
-  | PIXELSIZE #pixelLiteral
-  | PERCENTAGE #percentageLiteral
-  | SCALAR #scalarLiteral
-  | CAPITAL_IDENT #variableReference
-  | TRUE #trueLiteral
-  | FALSE #falseLiteral
-  | expression PLUS expression #addExpression
-  ;
+  stylesheet: (assignment | stylerule | ifClause)*;
+  assignment: CAPITAL_IDENT ASSIGNMENT_OPERATOR expression SEMICOLON;
+  stylerule: selector OPEN_BRACE (declaration | assignment | ifClause)* CLOSE_BRACE;
+  selector: LOWER_IDENT | ID_IDENT | CLASS_IDENT;
+  declaration: property COLON expression SEMICOLON;
+  property: LOWER_IDENT;
+  ifClause
+    : IF BOX_BRACKET_OPEN condition BOX_BRACKET_CLOSE OPEN_BRACE (assignment | stylerule | declaration | ifClause)* CLOSE_BRACE (elseClause)?
+    ;
+  elseClause
+    : ELSE OPEN_BRACE (assignment | stylerule | declaration | ifClause)* CLOSE_BRACE
+    ;
+  condition
+    : expression (comparator expression)?
+    ;
+  comparator
+    : '>' | '<' | '>=' | '<=' | '==' | '!='
+    ;
+  expression
+    : '(' expression ')' #parenExpression
+    | expression MUL expression #mulExpression
+    | expression PLUS expression #addExpression
+    | expression MIN expression #subExpression
+    | COLOR #colorLiteral
+    | PIXELSIZE #pixelLiteral
+    | PERCENTAGE #percentageLiteral
+    | SCALAR #scalarLiteral
+    | CAPITAL_IDENT #variableReference
+    | TRUE #trueLiteral
+    | FALSE #falseLiteral
+    ;
 
