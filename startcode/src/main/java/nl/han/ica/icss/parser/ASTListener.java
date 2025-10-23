@@ -100,6 +100,14 @@ public class ASTListener extends ICSSBaseListener {
     @Override public void exitIfClause(ICSSParser.IfClauseContext ctx) {
         currentContainer.pop();
     }
+    @Override public void enterElseClause(ICSSParser.ElseClauseContext ctx) {
+        ElseClause elseClause = new ElseClause();
+        currentContainer.peek().addChild(elseClause);
+        currentContainer.push(elseClause);
+    }
+    @Override public void exitElseClause(ICSSParser.ElseClauseContext ctx) {
+        currentContainer.pop();
+    }
 	@Override public void enterAddExpression(ICSSParser.AddExpressionContext ctx) {
 		AddOperation addOperation = new AddOperation();
 		currentContainer.peek().addChild(addOperation);
