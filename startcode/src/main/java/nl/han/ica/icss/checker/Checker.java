@@ -25,6 +25,15 @@ public class Checker {
         checkStylesheet(ast.root);
     }
 
+    private void checkStylesheet(Stylesheet sheet) {
+        for (ASTNode child : sheet.getChildren()) {
+            if (child instanceof Stylerule) {
+                checkStylerule((Stylerule) child);
+            } else if (child instanceof VariableAssignment) {
+                checkAssignment((VariableAssignment) child);
+            }
+        }
+    }
 
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
 
