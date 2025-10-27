@@ -102,3 +102,7 @@ public class Checker {
         }
     }
 
+    private void checkAssignment(VariableAssignment child) {
+        ExpressionType type = evaluateExpression(child.expression);
+        variableTypes.peek().put(child.name.name, type);
+    }
