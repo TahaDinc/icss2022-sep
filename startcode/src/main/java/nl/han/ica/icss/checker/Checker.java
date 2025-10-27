@@ -51,8 +51,34 @@ public class Checker {
         variableTypes.pop();
     }
 
-    public void check(AST ast) {
-        // variableTypes = new HANLinkedList<>();
+    private void checkIfClause(IfClause ifClause) {
+        // create a new scope for this if clause
+        variableTypes.push(new HashMap<>());
+        for (ASTNode child : ifClause.body) {
+            if (child instanceof Declaration) {
+                checkDeclaration((Declaration) child);
+            } else if (child instanceof VariableAssignment) {
+                checkAssignment((VariableAssignment) child);
+            }
+        }
+        // leave scope
+        variableTypes.pop();
+
+        // check else clause if present
+        if (ifClause.elseClause != null) {
+            // create a new scope for else clause
+            variableTypes.push(new HashMap<>());
+            for (ASTNode child : ifClause.elseClause.body) {
+                if (child instanceof Declaration) {
+                    checkDeclaration((Declaration) child);
+                } else if (child instanceof VariableAssignment) {
+                    checkAssignment((VariableAssignment) child);
+                }
+            }
+            // leave scope
+            variableTypes.pop();
+        }
+    }
 
     }
 
