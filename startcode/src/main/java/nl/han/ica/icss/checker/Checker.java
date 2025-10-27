@@ -80,7 +80,25 @@ public class Checker {
         }
     }
 
+    private void checkDeclaration(Declaration declaration) {
+        // Haal expression type
+        ExpressionType type = evaluateExpression(declaration.expression);
+
+        switch (declaration.property.name) {
+            case "width":
+                if (type != ExpressionType.PIXEL) {
+                    declaration.setError("Only pixel literals can be assigned to width property");
+                }
+                break;
+            case "color":
+            case "background-color":
+                if (type != ExpressionType.COLOR) {
+                    declaration.setError("Only color literals can be assigned to color property");
+                }
+                break;
+            default:
+                // hier kan je andere properties toevoegen later
+                break;
+        }
     }
 
-    
-}
