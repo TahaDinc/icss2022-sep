@@ -35,7 +35,21 @@ public class Checker {
         }
     }
 
-    private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
+    private void checkStylerule(Stylerule rule) {
+        // create a new scope for this stylerule
+        variableTypes.push(new HashMap<>());
+        for (ASTNode child : rule.getChildren()) {
+            if (child instanceof Declaration) {
+                checkDeclaration((Declaration) child);
+            } else if (child instanceof VariableAssignment) {
+                checkAssignment((VariableAssignment) child);
+            } else if (child instanceof IfClause) {
+                checkIfClause((IfClause) child);
+            }
+        }
+        // leave scope
+        variableTypes.pop();
+    }
 
     public void check(AST ast) {
         // variableTypes = new HANLinkedList<>();
