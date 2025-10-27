@@ -106,3 +106,63 @@ public class Checker {
         ExpressionType type = evaluateExpression(child.expression);
         variableTypes.peek().put(child.name.name, type);
     }
+
+    private ExpressionType evaluateExpression(Expression expression) {
+        if (expression instanceof ColorLiteral) {
+            return ExpressionType.COLOR;
+        } else if (expression instanceof PixelLiteral) {
+            return ExpressionType.PIXEL;
+        } else if (expression instanceof ScalarLiteral) {
+            return ExpressionType.SCALAR;
+        } else if (expression instanceof PercentageLiteral) {
+            return ExpressionType.PERCENTAGE;
+        } else if (expression instanceof VariableReference) {
+            String varName = ((VariableReference) expression).name;
+            for (HashMap<String, ExpressionType> scope : variableTypes) {
+                if (scope.containsKey(varName)) {
+                    return scope.get(varName);
+                }
+            }
+            expression.setError("Variable " + varName + " is not defined");
+            return null;
+        } else if (expression instanceof Operation) {
+            Operation op = (Operation) expression;
+            // attempt to retrieve operands (lhs / rhs)
+            Expression leftExpr = op.lhs;
+            Expression rightExpr = op.rhs;
+            ExpressionType left = evaluateExpression(leftExpr);
+            ExpressionType right = evaluateExpression(rightExpr);
+
+            if (left == null || right == null) return null;
+
+            // CH03: Colors not allowed in operations
+            if (left == ExpressionType.COLOR || right == ExpressionType.COLOR) {
+                expression.setError("Colors cannot be used in operations");
+                return null;
+            }
+
+            // determine operator and check rules using concrete operation classes
+            if (op instanceof AddOperation || op instanceof SubtractOperation) {
+                // CH02: operands of + and - must be same type
+                if (left != right) {
+                    expression.setError("Operands of + and - must be of the same type");
+                    return null;
+                }
+                return left;
+            } else if (op instanceof MultiplyOperation) {
+                // CH02: at least one operand must be scalar
+                if (left != ExpressionType.SCALAR && right != ExpressionType.SCALAR) {
+                    expression.setError("At least one operand of * must be a scalar");
+                    return null;
+                }
+                // result type: if one side is scalar, result is the other type
+                if (left == ExpressionType.SCALAR) return right;
+                return left;
+            } else {
+                // other operators if present
+                return null;
+            }
+        }
+        return null;
+    }
+}
