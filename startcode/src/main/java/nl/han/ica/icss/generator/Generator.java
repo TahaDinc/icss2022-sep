@@ -1,10 +1,7 @@
 package nl.han.ica.icss.generator;
 
 
-import nl.han.ica.icss.ast.AST;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.Stylerule;
-import nl.han.ica.icss.ast.Stylesheet;
+import nl.han.ica.icss.ast.*;
 
 public class Generator {
 
@@ -24,52 +21,59 @@ public class Generator {
         return sb.toString();
     }
 
-    private String generateStylerule(Stylerule node, int indentLevel) {
-        StringBuilder sb = new StringBuilder();
+private String generateStylerule(Stylerule node, int indentLevel) {
         String indent = INDENT.repeat(indentLevel);
+        StringBuilder css = new StringBuilder(indent);
 
-        StringBuilder selectors = new StringBuilder();
-        for (int i = 0; i < node.selectors.size(); i++) {
-            if (i > 0) selectors.append(", ");
-            selectors.append(node.selectors.get(i).toString());
+        boolean isFirstSelector = true;
+        for (Object selector : node.selectors) {
+            if (!isFirstSelector) css.append(", ");
+            isFirstSelector = false;
+            css.append(selector.toString());
         }
 
-        sb.append(indent).append(selectors).append(" {\n");
-        for (Object b : node.body) {
-            if (b instanceof Declaration) {
-                sb.append(generateDeclaration((Declaration) b, indentLevel + 1));
+        css.append(" {\n");
+        for (Object body : node.body) {
+            if (body instanceof Declaration) {
+                css.append(generateDeclaration((Declaration) body, indentLevel + 1));
             }
         }
-        sb.append(indent).append("}\n");
-        return sb.toString();
+        css.append(indent).append("}\n");
+        return css.toString();
     }
 
-private String generateDeclaration(Declaration node, int indentLevel) {
+    private String generateDeclaration(Declaration node, int indentLevel) {
+        if (node == null || node.property == null) return "";
         String indent = INDENT.repeat(indentLevel);
-        String raw = node.expression.toString();
-        String expr = raw.replace("[", "")
-                .replace("]", "")
-                .replace("|", "")
-                .replace("(", "")
-                .replace(")", "")
-                .trim();
+        return indent + node.property.name + ": " + literalToString(node.expression) + ";\n";
+    }
+
+
+    private String literalToString(Expression expr) {
+        if (expr == null) return "";
+
+        String raw = expr.toString();
 
         if (raw.contains("Pixel literal")) {
-            expr = expr.replace("Pixel literal", "").trim();
-            if (!expr.endsWith("px")) expr = expr + "px";
-        } else if (raw.contains("Percentage literal")) {
-            expr = expr.replace("Percentage literal", "").trim();
-            if (!expr.endsWith("%")) expr = expr + "%";
-        } else if (raw.contains("Color literal")) {
-            expr = expr.replace("Color literal", "").trim();
-        } else if (raw.contains("Scalar literal")) {
-            expr = expr.replace("Scalar literal", "").trim();
-        } else if (raw.contains("Bool literal")) {
-            expr = expr.replace("Bool literal", "").trim();
-        } else if (raw.contains("VariableReference")) {
-            expr = expr.replace("VariableReference", "").trim();
+            return raw.replaceAll("Pixel literal|\\[|\\]|\\(|\\)", "").trim() + "px";
+        }
+        if (raw.contains("Percentage literal")) {
+            return raw.replaceAll("Percentage literal|\\[|\\]|\\(|\\)", "").trim() + "%";
+        }
+        if (raw.contains("Color literal")) {
+            return raw.replaceAll("Color literal|\\[|\\]|\\(|\\)", "").trim();
+        }
+        if (raw.contains("Scalar literal")) {
+            return raw.replaceAll("Scalar literal|\\[|\\]|\\(|\\)", "").trim();
+        }
+        if (raw.contains("Bool literal")) {
+            return raw.replaceAll("Bool literal|\\[|\\]|\\(|\\)", "").trim();
+        }
+        if (raw.contains("VariableReference")) {
+            return raw.replaceAll("VariableReference|\\[|\\]|\\(|\\)", "").trim();
         }
 
-        return indent + node.property.name + ": " + expr + ";\n";
+        return raw.replaceAll("\\[|\\]|\\(|\\)", "").trim();
     }
+
 }
