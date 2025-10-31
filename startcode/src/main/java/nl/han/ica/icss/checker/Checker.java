@@ -149,15 +149,11 @@ public class Checker {
                     // als we in de globale scope zitten, is de variabele toegankelijk
                     if (scope == globalScope) {
                         return scope.get(varName);
-                    // anders is de variabele niet toegankelijk
-                    } else {
-                        expression.setError("Variable " + varName + " is not accessible in this selector");
-                        return scope.get(varName);
                     }
                 }
             }
             // als de variabele niet gevonden is, geef een foutmelding
-            expression.setError("Variable " + varName + " is not defined");
+            expression.setError("Variable " + varName + " is not defined or this selector cannot access it");
             return null;
         // als de expressie een operatie is
         } else if (expression instanceof Operation) {
