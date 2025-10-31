@@ -49,31 +49,31 @@ private String generateStylerule(Stylerule node, int indentLevel) {
     }
 
 
-    private String literalToString(Expression expr) {
+private String literalToString(Expression expr) {
         if (expr == null) return "";
 
         String raw = expr.toString();
 
         if (raw.contains("Pixel literal")) {
-            return raw.replaceAll("Pixel literal|\\[|\\]|\\(|\\)", "").trim() + "px";
+            return raw.replaceAll("Pixel literal|\\[|\\]|\\(|\\)|\\|", "").trim() + "px";
         }
         if (raw.contains("Percentage literal")) {
-            return raw.replaceAll("Percentage literal|\\[|\\]|\\(|\\)", "").trim() + "%";
+            return raw.replaceAll("Percentage literal|\\[|\\]|\\(|\\)|\\|", "").trim() + "%";
         }
         if (raw.contains("Color literal")) {
-            return raw.replaceAll("Color literal|\\[|\\]|\\(|\\)", "").trim();
+            return raw.replaceAll("Color literal|\\[|\\]|\\(|\\)|\\|", "").trim();
         }
         if (raw.contains("Scalar literal")) {
-            return raw.replaceAll("Scalar literal|\\[|\\]|\\(|\\)", "").trim();
+            return raw.replaceAll("Scalar literal|\\[|\\]|\\(|\\)|\\|", "").trim();
         }
         if (raw.contains("Bool literal")) {
-            return raw.replaceAll("Bool literal|\\[|\\]|\\(|\\)", "").trim();
+            return raw.replaceAll("Bool literal|\\[|\\]|\\(|\\)|\\|", "").trim();
         }
         if (raw.contains("VariableReference")) {
-            return raw.replaceAll("VariableReference|\\[|\\]|\\(|\\)", "").trim();
+            return raw.replaceAll("VariableReference|\\[|\\]|\\(|\\)|\\|", "").trim();
         }
 
-        return raw.replaceAll("\\[|\\]|\\(|\\)", "").trim();
+        return raw.replaceAll("\\[|\\]|\\(|\\)|\\|", "").trim();
     }
 
 }
